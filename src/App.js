@@ -1,6 +1,7 @@
 import React from "react";
 import { useMediaQuery } from "react-responsive";
 import Header from "./Components/Header/Header";
+import MessageList from "./MessageList";
 import Form from "./Pages/Form";
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
       {isMobile && (
         <>
           <Header />
+          <MessageList />
           <Form />
         </>
       )}
