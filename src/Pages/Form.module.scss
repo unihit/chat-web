@@ -1,0 +1,15 @@
+.form {
+  position: fixed;
+  width: 100%;
+  bottom: 0px;
+  padding-right: 0;
+  background: rgba($color: #ffffff, $alpha: 0.9);
+
+  .textField {
+  }
+
+  .sendButton {
+    margin-right: -14px;
+    cursor: pointer;
+  }
+}
