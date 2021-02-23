@@ -9,7 +9,9 @@ const socket = io("http://localhost:3001/");
 
 export default function Form() {
   const [userId, setUserId] = useState("id1");
-  const [contents, setContents] = useState("");
+  const [msgList, setMsgList] = useState([]);
+  const [msg, setMsg] = useState("");
+
   // const mutaition = useMutation(sendMessage, {
   //   variables: {
   //     senderId: window.sessionStorage.getItem("id"),
@@ -45,19 +47,25 @@ export default function Form() {
   //   window.scrollTo(0, document.body.scrollHeight);
   // });
 
-  useEffect(() => {
-    socket.emit("roomjoin", userId);
-  })
+  const submit = (e) => {
+    e.preventDefault();
+    socket.emit("send message", { name: userId, message: msg });
+  };
 
+  useEffect(() => {
+    // socket.on("receive message", (message) => {
+    //   setMsgList((msgList) => msgList.concat(message));
+    // });
+  }, []);
 
   return (
     <div className={styles.form}>
       <TextField
         className={styles.textField}
         onChange={(e) => {
-          setContents(e.target.value);
+          setMsg(e.target.value);
         }}
-        value={contents}
+        value={msg}
         fullWidth={true}
         margin="normal"
         multiline
@@ -74,9 +82,8 @@ export default function Form() {
                 size="large"
                 className={styles.sendButton}
                 onClick={(e) => {
-                  // setContents(e.target.value);
-                  setContents("");
-                  socket.emit("alert")
+                  // setMsg(e.target.value);
+                  setMsg("");
                 }}
               >
                 <SendIcon color="white" />
