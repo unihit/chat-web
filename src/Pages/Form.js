@@ -5,11 +5,15 @@ import SendIcon from "@material-ui/icons/Send";
 import styles from "./Form.module.scss";
 
 // 3001번 포트 사용(서버)
-const socket = io("http://localhost:3001/");
+// const socket = io.connect("http://192.168.100.120:3000/");
+let socket;
 
 export default function Form() {
   const [userId, setUserId] = useState("id1");
-  const [contents, setContents] = useState("");
+  const [msgList, setMsgList] = useState([]);
+  const [msg, setMsg] = useState("");
+
+  const ENDPOINT = "http://192.168.100.120:3000/";
   // const mutaition = useMutation(sendMessage, {
   //   variables: {
   //     senderId: window.sessionStorage.getItem("id"),
@@ -46,18 +50,28 @@ export default function Form() {
   // });
 
   useEffect(() => {
-    socket.emit("roomjoin", userId);
-  })
+    socket = io.connect(ENDPOINT); // socket connect
+    socket.emit("connected", "nickname");
+    socket.on("receive message", (message) => {
+      setMsgList((msgList) => msgList.concat(message));
+    });
+    console.log(socket);
+  }, [ENDPOINT]);
 
+  useEffect(() => {
+    socket.on("hi", (msg) => {
+      console.log(msg);
+    });
+  }, [msg]);
 
   return (
     <div className={styles.form}>
       <TextField
         className={styles.textField}
         onChange={(e) => {
-          setContents(e.target.value);
+          setMsg(e.target.value);
         }}
-        value={contents}
+        value={msg}
         fullWidth={true}
         margin="normal"
         multiline
@@ -74,9 +88,8 @@ export default function Form() {
                 size="large"
                 className={styles.sendButton}
                 onClick={(e) => {
-                  // setContents(e.target.value);
-                  setContents("");
-                  socket.emit("alert")
+                  // setMsg(e.target.value);
+                  setMsg("");
                 }}
               >
                 <SendIcon color="white" />
