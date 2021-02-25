@@ -16,10 +16,10 @@ function App() {
   const [cookies, setCookie] = useCookies([]);
 
   useEffect(() => {
-    fetch("http://192.168.100.120:3000/", { withCredentials: true })
+    fetch("http://192.168.100.120:3000/")
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         setCookie("customer", res.token);
       });
   }, []);
@@ -28,7 +28,7 @@ function App() {
     <>
       {isTablet && (
         <>
-          <p>Hi Tablet</p>
+          <Header />
           <Form />
         </>
       )}

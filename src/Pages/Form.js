@@ -5,13 +5,15 @@ import SendIcon from "@material-ui/icons/Send";
 import styles from "./Form.module.scss";
 
 // 3001번 포트 사용(서버)
-const socket = io("http://localhost:3001/");
+// const socket = io.connect("http://192.168.100.120:3000/");
+let socket;
 
 export default function Form() {
   const [userId, setUserId] = useState("id1");
   const [msgList, setMsgList] = useState([]);
   const [msg, setMsg] = useState("");
 
+  const ENDPOINT = "http://192.168.100.120:3000/";
   // const mutaition = useMutation(sendMessage, {
   //   variables: {
   //     senderId: window.sessionStorage.getItem("id"),
@@ -47,16 +49,20 @@ export default function Form() {
   //   window.scrollTo(0, document.body.scrollHeight);
   // });
 
-  const submit = (e) => {
-    e.preventDefault();
-    socket.emit("send message", { name: userId, message: msg });
-  };
+  useEffect(() => {
+    socket = io.connect(ENDPOINT); // socket connect
+    socket.emit("connected", "nickname");
+    socket.on("receive message", (message) => {
+      setMsgList((msgList) => msgList.concat(message));
+    });
+    console.log(socket);
+  }, [ENDPOINT]);
 
   useEffect(() => {
-    // socket.on("receive message", (message) => {
-    //   setMsgList((msgList) => msgList.concat(message));
-    // });
-  }, []);
+    socket.on("hi", (msg) => {
+      console.log(msg);
+    });
+  }, [msg]);
 
   return (
     <div className={styles.form}>
